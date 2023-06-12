@@ -4,24 +4,53 @@
 
 use array::ArrayTrait;
 use debug::PrintTrait;
+//use clone::Clone;
+//use array::ArrayTCloneImpl;
 
-// I AM NOT DONE
+
 
 fn main() {
-    let arr0 = ArrayTrait::new();
+    let mut arr0 = ArrayTrait::new();
+    //let arr_clone = arr0.clone();
+    
 
-    let mut arr1 = fill_arr(arr0);
+    fill_array(ref arr0);
 
     // Do not change the following line!
     arr0.print();
 }
 
-fn fill_arr(arr: Array<felt252>) -> Array<felt252> {
-    let mut arr = arr;
+// fn fill_array(arr: Array<felt252>) -> Array<felt252> {
+//     let mut arr = arr;
+// 
+//     arr.append(22);
+//     arr.append(44);
+//     arr.append(66);
+// 
+//     arr
+// }
+
+fn fill_array(ref arr: Array<felt252>)  {
 
     arr.append(22);
     arr.append(44);
     arr.append(66);
 
-    arr
 }
+
+
+//First solution is to add:
+//use clone::Clone;
+//use array::ArrayTCloneImpl;
+// then:  let arr_clone = arr0.clone();
+// and:  let arr1 = fill_array(arr_clone);
+
+//Second solution is to modify arr0 as mut and pass "ref arr0" into the function call.
+//Then, modify the function as follows:
+//fn fill_array(ref arr: Array<felt252>)  {
+//
+//    arr.append(22);
+//    arr.append(44);
+//    arr.append(66);
+//
+//}

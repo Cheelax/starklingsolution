@@ -1,7 +1,7 @@
 // options3.cairo
 // Execute `starklings hint options3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+
 
 use option::OptionTrait;
 use debug::PrintTrait;
@@ -26,7 +26,7 @@ fn display_grades(student: @Student, index: usize) {
         },
     }
 
-    if index == 0{
+    if index == 0_usize {
         let mut msg = ArrayTrait::new();
         msg.append(*student.name);
         msg.append('\'s grades:');
@@ -41,8 +41,13 @@ fn display_grades(student: @Student, index: usize) {
     // TODO: Modify the following lines so that if there is a grade for the course, it is printed.
     //       Otherwise, print "No grade".
     // 
+    if course.is_some() == true {
     course.unwrap().print();
-    display_grades(student, index + 1);
+    }
+    else if course.is_none() == true {
+
+    display_grades(student, index + 1_usize);
+    }
 }
 
 
@@ -55,7 +60,7 @@ fn test_all_defined() {
     courses.append(Option::Some('C'));
     courses.append(Option::Some('A'));
     let mut student = Student { name: 'Alice', courses: courses };
-    display_grades(@student, 0);
+    display_grades(@student, 0_usize);
 }
 
 
@@ -69,5 +74,5 @@ fn test_some_empty() {
     courses.append(Option::Some('C'));
     courses.append(Option::None(()));
     let mut student = Student { name: 'Bob', courses: courses };
-    display_grades(@student, 0);
+    display_grades(@student, 0_usize);
 }

@@ -1,51 +1,59 @@
-// starknet1.cairo
-// Starkling, Joe, is writing a really simple contract.
-// The contract shows that he is the owner of the contract.
-// However, his contract is not working. What's he missing?
 
-// I AM NOT DONE
+// These modules have some issues, can you fix?
+// Run `starklings hint modules2` or `hint` watch command for a hint.
 
-#[contract]
-mod JoesContract {
+use debug::PrintTrait;
+//const YEAR: u16 = 2050;
 
-    fn get_owner() -> felt252 {
-        'Joe'
+mod order {
+    const YEAR: u16 = 2050;
+    #[derive(Copy, Drop)]
+    struct Order {
+        name: felt252,
+        year: u16,
+        made_by_phone: bool,
+        made_by_email: bool,
+        item: felt252,
     }
 
+    fn new_order( name: felt252, made_by_phone: bool, item: felt252 ) -> Order {
+        Order {
+            name,
+            year: YEAR,
+            made_by_phone,
+            made_by_email: ! made_by_phone,
+            item,
+        }
+    }
 }
 
-#[abi]
-trait IJoesContract {
-    fn get_owner() -> felt252;
+mod order_utils {
+    use super::order;
+
+    fn dummy_phoned_order( name: felt252 ) -> order::Order {
+       order::new_order( name, true, 'item_a' )
+    }
+
+    fn dummy_emailed_order( name: felt252 ) -> order::Order {
+        order::new_order( name, false, 'item_a' )
+    }
+
+    fn order_fees( order1: order::Order ) -> felt252 {
+        if order1.made_by_phone {
+            return 500;
+        }
+
+        200
+    }
 }
 
-#[cfg(test)]
-mod test {
-    use array::ArrayTrait;
-    use array::SpanTrait;
-    use super::JoesContract;
-    use starknet::syscalls::deploy_syscall;
-    use traits::TryInto;
-    use option::OptionTrait;
-    use starknet::class_hash::Felt252TryIntoClassHash;
-    use core::result::ResultTrait;
-    use super::IJoesContractDispatcher;
-    use super::IJoesContractDispatcherTrait;
-    use starknet::ContractAddress;
+#[test]
+fn test_array() {
+    let order1 = order_utils::dummy_phoned_order( 'John Doe' );
+    let fees1 = order_utils::order_fees( order1 );
+    assert( fees1 == 500, 'Order fee should be 500');
 
-    #[test]
-    #[available_gas(2000000000)]
-    fn test_contract_view() {
-        let dispatcher = deploy_contract();
-        assert( 'Joe' == dispatcher.get_owner(), 'Joe should be the owner.' );
-    }
-
-    fn deploy_contract() -> IJoesContractDispatcher {
-        let mut calldata = ArrayTrait::new();
-        let (address0, _) = deploy_syscall(
-            JoesContract::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
-        ).unwrap();
-        let contract0 = IJoesContractDispatcher { contract_address: address0 };
-        contract0
-    }
+    let order2 = order_utils::dummy_emailed_order( 'Jane Doe' );
+    let fees2 = order_utils::order_fees( order2 );
+    assert( fees2 == 200, 'Order fee should be 200');
 }

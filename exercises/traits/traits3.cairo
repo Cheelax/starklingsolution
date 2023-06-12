@@ -7,7 +7,6 @@
 
 // Execute `starklings hint traits3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 #[derive(Copy, Drop)]
 struct Fish {
@@ -37,7 +36,7 @@ trait DogTrait {
 
 impl AnimalFishImpl of AnimalTrait::<Fish> {
     fn new() -> Fish {
-        Fish { noise: 'blub', distance: 0}
+        Fish { noise: 'blub', distance: 1_u32 }
     }
     fn make_noise(self: Fish) -> felt252 {
         self.noise
@@ -49,7 +48,7 @@ impl AnimalFishImpl of AnimalTrait::<Fish> {
 
 impl AnimalDogImpl of AnimalTrait::<Dog> {
     fn new() -> Dog {
-        Dog { noise: 'woof', distance: 0}
+        Dog { noise: 'woof', distance: 1_u32 }
     }
     fn make_noise(self: Dog) -> felt252 {
         self.noise
@@ -60,8 +59,14 @@ impl AnimalDogImpl of AnimalTrait::<Dog> {
 }
 
 // TODO: implement FishTrait for the type Fish
+impl AnimalFishImpl_1 of FishTrait {
+    fn swim(ref self: Fish) {}
+}
 
 // TODO: implement DogTrait for the type Dog
+impl AnimalDogImpl_1 of DogTrait {
+    fn walk(ref self: Dog) {}
+}
 
 #[test]
 fn test_traits3() {
@@ -69,10 +74,13 @@ fn test_traits3() {
     let mut salmon: Fish = AnimalTrait::new();
     salmon.swim();
     assert(salmon.make_noise() == 'blub', 'Wrong noise');
-    assert(salmon.get_distance() == 1, 'Wrong distance');
+    assert(salmon.get_distance() == 1_u32, 'Wrong distance');
 
     let mut dog: Dog = AnimalTrait::new();
     dog.walk();
     assert(dog.make_noise() == 'woof', 'Wrong noise');
-    assert(dog.get_distance() == 1, 'Wrong distance');
+    assert(dog.get_distance() == 1_u32, 'Wrong distance');
 }
+
+
+// I'm unsure of what the best naming convention would be for supplemental implementations (line 63  and 68).

@@ -2,12 +2,16 @@
 // Address all the TODOs to make the tests pass!
 // Execute `starklings hint enums3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 use debug::PrintTrait;
 
 #[derive(Drop, Copy)]
 enum Message { // TODO: implement the message variant types based on their usage below
+    ChangeColor : (u8, u8, u8),
+    Echo : felt252,
+    Move : Point,
+    Quit : (),
+
 }
 
 #[derive(Drop, Copy)]
@@ -53,6 +57,20 @@ impl StateImpl of StateTrait {
         ref self: State, message: Message
     ) { // TODO: create a match expression to process the different message variants
     // Remember: When passing a tuple as a function argument, you'll need extra parentheses: fn function((t, u, p, l, e))
+    match message {
+        Message::ChangeColor((r, g, b)) => {
+            self.change_color((r, g, b));
+        },
+        Message::Echo(value) => {
+            value.print();
+        },
+        Message::Move(point) => {
+            self.move_position(point);
+        },
+        Message::Quit(()) => {
+            self.quit();
+        },
+    }
     }
 }
 
@@ -60,16 +78,16 @@ impl StateImpl of StateTrait {
 #[test]
 fn test_match_message_call() {
     let mut state = State {
-        quit: false, position: Point { x: 0, y: 0}, color: (0, 0, 0), 
+        quit: false, position: Point { x: 0_u8, y: 0_u8 }, color: (0_u8, 0_u8, 0_u8), 
     };
-    state.process(Message::ChangeColor((255, 0, 255)));
+    state.process(Message::ChangeColor((255_u8, 0_u8, 255_u8)));
     state.process(Message::Echo('hello world'));
-    state.process(Message::Move(Point { x: 10, y: 15}));
+    state.process(Message::Move(Point { x: 10_u8, y: 15_u8 }));
     state.process(Message::Quit(()));
 
-    assert(state.color == (255, 0, 255), 'wrong color');
-    assert(state.position.x == 10, 'wrong x position');
-    assert(state.position.y == 15, 'wrong y position');
+    assert(state.color == (255_u8, 0_u8, 255_u8), 'wrong color');
+    assert(state.position.x == 10_u8, 'wrong x position');
+    assert(state.position.y == 15_u8, 'wrong y position');
     assert(state.quit == true, 'quit should be true');
 }
 
